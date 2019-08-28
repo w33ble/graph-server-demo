@@ -99,6 +99,11 @@ mutation {
 }
 ```
 
+## Resources
+
+- [A Beginner’s Guide to GraphQL](https://www.freecodecamp.org/news/a-beginners-guide-to-graphql-86f849ce1bec/)
+- [GraphQL Server Tutorial with Apollo Server and Express](https://www.robinwieruch.de/graphql-apollo-server-tutorial)
+
 ## License
 
 MIT © [w33ble](https://github.com/w33ble)

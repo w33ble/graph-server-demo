@@ -3,7 +3,6 @@ const expressPino = require('express-pino-logger');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const logger = require('./lib/logger');
-
 const graphServerV1 = require('./graph-v1');
 const graphServerV2 = require('./graph-v2');
 
