@@ -21,6 +21,7 @@ const typeDefs = gql`
   type Query {
     books: [Book]
     book(id: String!): Book
+    authors: [Author]
     author(id: String!): Author
   }
 
@@ -36,9 +37,10 @@ const resolvers = {
       return books.head(10);
     },
     book: (parent, { id }) => {
-      const book = books.get(id);
-      // if (!book) throw new Error('no such book');
-      return book;
+      return books.get(id);
+    },
+    authors: () => {
+      return authors.head(10);
     },
     author: (parent, { id }) => {
       const author = authors.get(id);
