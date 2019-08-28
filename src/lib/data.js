@@ -33,6 +33,10 @@ class Data {
     return this.db.find(doc => doc[field] === val);
   }
 
+  getAllByField(field, val) {
+    return this.db.filter(doc => doc[field] === val);
+  }
+
   head(count) {
     return this.db.slice(0, count);
   }

@@ -13,9 +13,9 @@ const typeDefs = gql`
   }
 
   type Book {
+    id: String
     title: String
     author: Author
-    id: String
   }
 
   type Query {
@@ -32,26 +32,45 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    books: () => books.head(10),
-    book: (_root, { id }) => {
+    books: () => {
+      return books.head(10);
+    },
+    book: (parent, { id }) => {
       const book = books.get(id);
       // if (!book) throw new Error('no such book');
       return book;
     },
-    author: (root, { id }) => {
+    author: (parent, { id }) => {
       const author = authors.get(id);
       return author;
     },
   },
   Mutation: {
-    addAuthor: (_root, { name }) => {
+    addAuthor: (_parent, { name }) => {
       // prevent duplicate names
       const match = authors.getByField('name', name);
-      logger.info('has match', { match });
       if (match) return match;
 
       // add author and return entire document
       return authors.add({ name });
+    },
+    addBook: (_parent, { title, author }) => {
+      const match = books.getByField('title', title);
+      if (match) return match;
+
+      return books.add({ title, author });
+    },
+  },
+  Book: {
+    author: parent => {
+      logger.debug('Fetch author id:', parent.author);
+      return authors.get(parent.author);
+    },
+  },
+  Author: {
+    books: parent => {
+      logger.debug('Fetch book id:', parent.id);
+      return books.getAllByField('author', parent.id);
     },
   },
 };
