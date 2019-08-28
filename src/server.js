@@ -1,15 +1,11 @@
-const pino = require('pino')({
-  name: 'graphql-demo',
-  level: 'info',
-  prettyPrint: true,
-});
 const express = require('express');
-const expressPino = require('express-pino-logger')({
-  logger: pino,
-});
+const expressPino = require('express-pino-logger');
+const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const logger = require('./lib/logger');
 
-const { ApolloServer } = require('apollo-server-express');
-const { typeDefs, resolvers } = require('./schemas/v1/schema');
+const graphServerV1 = require('./graph-v1');
+const graphServerV2 = require('./graph-v2');
 
 const serverOptions = {
   port: process.env.PORT || 8081,
@@ -17,20 +13,19 @@ const serverOptions = {
 
 function server() {
   const app = express();
-  // Additional middleware can be mounted at this point to run before Apollo.
-  app.use(expressPino);
-  // app.use('*', jwtCheck, requireAuth, checkScope);
+  app.use(
+    expressPino({
+      logger,
+      useLevel: 'debug',
+    })
+  );
+  app.use(helmet());
+  app.use(bodyParser.json());
 
-  const apolloServer = new ApolloServer({
-    // These will be defined for both new or existing servers
-    typeDefs,
-    resolvers,
-  });
+  graphServerV1(app, '/graphql');
+  graphServerV2(app, '/v2/graphql');
 
-  // app is from an existing express app. Mount Apollo middleware here. If no path is specified, it defaults to `/graphql`.
-  apolloServer.applyMiddleware({ app, path: '/graphql' });
-
-  app.listen(serverOptions, () => pino.info(`🚀 Server ready port ${serverOptions.port}`));
+  app.listen(serverOptions, () => logger.info(`🚀 Server ready port ${serverOptions.port}`));
 }
 
 module.exports = server;
