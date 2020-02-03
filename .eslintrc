@@ -16,6 +16,7 @@
     "import/no-extraneous-dependencies": [
       "error", {
         "devDependencies": [
+          "lint-staged.config.js",
           "test/**",
           "packages/**/test/**",
           "packages/**/*.test.js"
